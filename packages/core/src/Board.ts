@@ -65,7 +65,6 @@ export class Board {
     result = this.transpose(result);
   }
 
-  // 4. запис + (необ.) спавн нової плитки
   if (moved) {
     this.grid = result;
     if (spawn) this.addRandomTile();
