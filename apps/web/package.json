@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build",
-    "preview": "pnpm --filter web preview",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test"
   },
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
