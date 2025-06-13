@@ -45,7 +45,6 @@ export class Board {
   move(dir: Direction, spawn = true): boolean {
   let working = this.copy(this.grid);
 
-  // 1. нормалізація
   if (dir === 'up') working = this.transpose(working);
   if (dir === 'right') working = this.reverseRows(working);
   if (dir === 'down') {
@@ -53,10 +52,8 @@ export class Board {
     working = this.reverseRows(working);
   }
 
-  // 2. мердж
   const { moved, grid: merged } = this.mergeRows(working);
 
-  // 3. денормалізація
   let result = merged;
   if (dir === 'up') result = this.transpose(result);
   if (dir === 'right') result = this.reverseRows(result);
@@ -65,7 +62,6 @@ export class Board {
     result = this.transpose(result);
   }
 
-  // 4. запис + (необ.) спавн нової плитки
   if (moved) {
     this.grid = result;
     if (spawn) this.addRandomTile();
