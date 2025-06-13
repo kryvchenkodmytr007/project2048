@@ -16,7 +16,7 @@ describe('Board core', () => {
       [2, null, null, null],
     ];
     const b = new Board(preset);
-    const moved = b.move('left');
+    const moved = b.move('left', false);
     expect(moved).toBe(true);
     expect(b.grid[0]).toEqual([4, null, null, null]);
     expect(b.grid[1]).toEqual([8, 8, null, null]);
