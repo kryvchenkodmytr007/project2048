@@ -1,47 +1,91 @@
-import { useState, useCallback } from 'react';
-import { Board, Direction } from '@project2048/core';
-import useKeyDown from '../hooks/useKeyDown';
-import { Tile } from './Tile';
+import { useEffect, useState } from 'react';
+import { Board, TileObj, Direction, isGameOver } from '@project2048/core';
+import Tile from './Tile';
 
-export default function Game() {
-  const [board, setBoard] = useState(() => new Board());
-  const [over, setOver]   = useState(false);
+const createBoard = () => new Board();
 
-  const move = useCallback((dir: Direction) => {
-    const next = new Board(board.grid);
-    if (next.move(dir)) {
-      setBoard(next);
-      if (next.isGameOver()) setOver(true);
+const Game = () => {
+  const [board, setBoard] = useState(() => createBoard());
+  const [tiles, setTiles] = useState<TileObj[]>(board.tiles);
+  const [gameOver, setGameOver] = useState(false);
+
+  const handleKey = (e: KeyboardEvent) => {
+    const dir = keyToDir(e.key);
+    if (!dir || gameOver) return;
+
+    const moved = board.move(dir);
+    if (moved) {
+      board.spawn();
+      setTiles(board.tiles);
+      setGameOver(isGameOver(board));
     }
-  }, [board]);
+  };
 
-  useKeyDown((k) => {
-    const map: Record<string, Direction> = {
-      ArrowLeft: 'left', ArrowRight: 'right',
-      ArrowUp: 'up',     ArrowDown: 'down',
-    };
-    if (map[k]) move(map[k]);
-  });
+  const restart = () => {
+    const b = createBoard();
+    setBoard(b);
+    setTiles(b.tiles);
+    setGameOver(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [board, gameOver]);
 
   return (
-    <div className="relative flex flex-col items-center gap-4 mt-10 select-none">
-      {over && (
-        <div className="absolute z-10 bg-white/80 backdrop-blur-md p-6 rounded-xl text-2xl">
-          Game Over – Score {board.score}
-        </div>
-      )}
+    <div className="flex flex-col items-center gap-4">
+      <h1 className="text-3xl font-bold text-white">2048</h1>
 
-      <div className="grid grid-cols-4 gap-2">
-        {board.grid.flatMap((row, i) =>
-          row.map((val, j) => <Tile key={`${i}-${j}`} value={val} />)
-        )}
+      <div
+        className="relative grid gap-3 bg-[#bbada0] p-3 rounded-2xl"
+        style={{
+          gridTemplateColumns: 'repeat(4, 6rem)',
+          gridTemplateRows: 'repeat(4, 6rem)',
+        }}
+      >
+        {tiles.map(tile => (
+          <div key={tile.id} style={{ gridColumn: tile.x + 1, gridRow: tile.y + 1 }}>
+            <Tile value={tile.value} isNew={tile.isNew} justMerged={tile.justMerged} />
+          </div>
+        ))}
       </div>
 
       <button
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-        onClick={() => { setBoard(new Board()); setOver(false); }}>
+        onClick={restart}
+        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-all"
+      >
         Restart
       </button>
+
+      {gameOver && (
+        <span className="text-white font-semibold text-lg mt-2">Game&nbsp;Over&nbsp;💀</span>
+      )}
     </div>
   );
-}
+};
+
+const keyToDir = (k: string): Direction | null => {
+  switch (k) {
+    case 'ArrowUp':
+    case 'w':
+    case 'W':
+      return 'up';
+    case 'ArrowDown':
+    case 's':
+    case 'S':
+      return 'down';
+    case 'ArrowLeft':
+    case 'a':
+    case 'A':
+      return 'left';
+    case 'ArrowRight':
+    case 'd':
+    case 'D':
+      return 'right';
+    default:
+      return null;
+  }
+};
+
+export default Game;
