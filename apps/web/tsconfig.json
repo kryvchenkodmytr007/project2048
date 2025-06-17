@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "jsx": "react-jsx",
-    "composite": true
+    "composite": true,
+    "types": ["vitest", "vite/client", "vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src", "tests", "vite.config.ts", "vitest.setup.ts"]
 }
