@@ -1,7 +1,12 @@
 import Game from './components/Game';
+import ScoreBadge from './components/ScoreBadge';
+import { ScoreProvider } from './contexts/score';
 
-function App() {
-  return <Game />;
+export default function App() {
+  return (
+    <ScoreProvider>
+      <ScoreBadge />
+      <Game />
+    </ScoreProvider>
+  );
 }
-
-export default App;

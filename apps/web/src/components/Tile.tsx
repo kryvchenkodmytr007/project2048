@@ -7,7 +7,7 @@ interface TileProps {
 }
 
 const Tile = ({ value, isNew, justMerged }: TileProps) => {
-  const bg   = `bg-tile-${value}`;
+  const bg = `bg-tile-${value}`;
   const text = value <= 4 ? 'text-zinc-800' : 'text-white';
 
   return (
@@ -15,9 +15,10 @@ const Tile = ({ value, isNew, justMerged }: TileProps) => {
       className={clsx(
         'w-24 h-24 flex items-center justify-center rounded-lg',
         'transition-all duration-100 tile-text',
-        bg, text,
+        bg,
+        text,
         isNew && 'animate-spawn',
-        justMerged && 'animate-bump'
+        justMerged && 'animate-bump',
       )}
     >
       {value}
