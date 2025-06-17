@@ -1,91 +1,102 @@
-import { useEffect, useState } from 'react';
-import { Board, TileObj, Direction, isGameOver } from '@project2048/core';
-import Tile from './Tile';
+import { useState } from 'react';
+import { Board, TileObj, isGameOver } from '@project2048/core';
+import type { Direction } from '@project2048/core';
 
-const createBoard = () => new Board();
+import Tile from './Tile';
+import useKeyDown from '../hooks/useKeyDown';
+
+const GRID = 4;
+
+const newBoard = () => new Board();
 
 const Game = () => {
-  const [board, setBoard] = useState(() => createBoard());
+  const [board, setBoard] = useState(() => newBoard());
   const [tiles, setTiles] = useState<TileObj[]>(board.tiles);
-  const [gameOver, setGameOver] = useState(false);
+  const [over, setOver]   = useState(false);
 
-  const handleKey = (e: KeyboardEvent) => {
-    const dir = keyToDir(e.key);
-    if (!dir || gameOver) return;
+  useKeyDown((k) => {
+    const dir = keyToDir(k);
+    if (!dir || over) return;
 
     const moved = board.move(dir);
-    if (moved) {
-      board.spawn();
-      setTiles(board.tiles);
-      setGameOver(isGameOver(board));
-    }
-  };
+    if (!moved) return;
+
+    board.spawn();
+    setTiles([...board.tiles]);
+    setOver(isGameOver(board));
+  });
 
   const restart = () => {
-    const b = createBoard();
-    setBoard(b);
-    setTiles(b.tiles);
-    setGameOver(false);
+    const fresh = newBoard();
+    setBoard(fresh);
+    setTiles(fresh.tiles);
+    setOver(false);
   };
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [board, gameOver]);
+  const tileAt = (x: number, y: number) =>
+    tiles.find((t) => t.x === x && t.y === y);
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex min-h-screen flex-col items-center justify-start gap-4 py-6">
       <h1 className="text-3xl font-bold text-white">2048</h1>
 
       <div
-        className="relative grid gap-3 bg-[#bbada0] p-3 rounded-2xl"
+        className="grid gap-3 bg-[#bbada0] p-3 rounded-2xl shadow-lg"
         style={{
-          gridTemplateColumns: 'repeat(4, 6rem)',
-          gridTemplateRows: 'repeat(4, 6rem)',
+          gridTemplateColumns: `repeat(${GRID}, 6rem)`,
+          gridTemplateRows:    `repeat(${GRID}, 6rem)`,
         }}
       >
-        {tiles.map(tile => (
-          <div key={tile.id} style={{ gridColumn: tile.x + 1, gridRow: tile.y + 1 }}>
-            <Tile value={tile.value} isNew={tile.isNew} justMerged={tile.justMerged} />
-          </div>
-        ))}
+        {Array.from({ length: GRID }).map((_, y) =>
+          Array.from({ length: GRID }).map((_, x) => {
+            const t = tileAt(x, y);
+            return (
+              <div key={`${x}-${y}`} className="relative">
+                {t ? (
+                  <Tile
+                    value={t.value}
+                    isNew={t.isNew}
+                    justMerged={t.justMerged}
+                  />
+                ) : (
+                  <div className="cell" />
+                )}
+              </div>
+            );
+          }),
+        )}
       </div>
 
       <button
         onClick={restart}
-        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-all"
+        className="px-4 py-2 mt-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold"
       >
         Restart
       </button>
 
-      {gameOver && (
-        <span className="text-white font-semibold text-lg mt-2">Game&nbsp;Over&nbsp;💀</span>
-      )}
+      {over && <span className="text-white font-semibold mt-2">Game&nbsp;Over&nbsp;💀</span>}
     </div>
   );
 };
 
-const keyToDir = (k: string): Direction | null => {
-  switch (k) {
+const keyToDir = (code: string): Direction | null => {
+  switch (code) {
     case 'ArrowUp':
-    case 'w':
-    case 'W':
+    case 'KeyW':
       return 'up';
     case 'ArrowDown':
-    case 's':
-    case 'S':
+    case 'KeyS':
       return 'down';
     case 'ArrowLeft':
-    case 'a':
-    case 'A':
+    case 'KeyA':
       return 'left';
     case 'ArrowRight':
-    case 'd':
-    case 'D':
+    case 'KeyD':
       return 'right';
     default:
       return null;
   }
 };
+
 
 export default Game;
