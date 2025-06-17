@@ -1,5 +1,13 @@
 export type Tile = number | null;
 export type Direction = 'left' | 'right' | 'up' | 'down';
+export interface TileObj {
+  id: number;
+  x: number;
+  y: number;
+  value: number;
+  isNew?: boolean;
+  justMerged?: boolean;
+}
 
 export class Board {
   readonly size = 4;
@@ -106,5 +114,21 @@ export class Board {
 
   isGameOver(): boolean {
     return !this.canMove();
+  }
+
+  spawn(): void {
+    this.addRandomTile();
+  }
+
+  private _id = 0;
+  get tiles(): TileObj[] {
+    const arr: TileObj[] = [];
+    this.grid.forEach((row, y) =>
+      row.forEach((v, x) => {
+        if (v !== null)
+          arr.push({ id: ++this._id, x, y, value: v });
+      }),
+    );
+    return arr;
   }
 }

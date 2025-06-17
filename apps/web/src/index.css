@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+@layer base {
+  html,
+  body {
+    @apply min-h-screen bg-[#42535f] text-zinc-50 bg-no-repeat bg-fixed;
+  }
+}
+
+@layer components {
+  .tile-text {
+    @apply font-extrabold text-4xl leading-none;
+  }
+  .cell {
+    @apply w-24 h-24 rounded-lg bg-zinc-800/20;
+  }
+}
+
+@layer utilities {
+  .bg-tile-2 {
+    background-color: #eee4da;
+  }
+  .bg-tile-4 {
+    background-color: #ede0c8;
+  }
+  .bg-tile-8 {
+    background-color: #f2b179;
+  }
+  .bg-tile-16 {
+    background-color: #f59563;
+  }
+  .bg-tile-32 {
+    background-color: #f67c5f;
+  }
+  .bg-tile-64 {
+    background-color: #f65e3b;
+  }
+  .bg-tile-128 {
+    background-color: #edcf72;
+  }
+  .bg-tile-256 {
+    background-color: #edcc61;
+  }
+  .bg-tile-512 {
+    background-color: #edc850;
+  }
+  .bg-tile-1024 {
+    background-color: #edc53f;
+  }
+  .bg-tile-2048 {
+    background-color: #edc22e;
+  }
+}
+
+@source inline("bg-tile-{2,4,8,16,32,64,128,256,512,1024,2048}");
