@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "pnpm --filter web dev",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "vitest"
+    "test": "vitest",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
     "eslint": "^9.28.0",
