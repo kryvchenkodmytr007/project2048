@@ -3,3 +3,4 @@ node_modules/
 apps/web_old
 .husky/
 **/.DS_Store
+apps/web/dist

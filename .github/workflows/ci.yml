@@ -22,7 +22,7 @@ jobs:
       - run: pnpm -r lint
 
       # ────────── TESTS ─────────
-      - run: pnpm -r test --run
+      - run: pnpm -r test
         env:
           CI: "true"
 
