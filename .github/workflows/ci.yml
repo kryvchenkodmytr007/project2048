@@ -1,18 +1,30 @@
 name: CI
 
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  test-and-lint:
+  lint-test-build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with: { version: 9 }
 
       - run: pnpm install --frozen-lockfile
 
+      # ────────── LINT ──────────
       - run: pnpm -r lint
-      - run: pnpm -r test
+
+      # ────────── TESTS ─────────
+      - run: pnpm -r test --run
+        env:
+          CI: "true"
+
+      # ────────── BUILD ----─────
+      - run: pnpm --filter @project2048/web build
